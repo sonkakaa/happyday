@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Lời chúc đặc biệt</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at center, #0D0D0D, #1A0033, #4B0082);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Hộp chứa chữ */
+    .message-box {
+      position: relative;
+      width: 500px;
+      height: 50px;
+      background: rgba(25, 25, 25, 0.8);
+      padding: 20px 40px;
+      border-radius: 15px;
+      border: 2px solid #FF0080;
+      color: #fff;
+      font-size: 20px;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      box-shadow: 0 0 20px #7928CA;
+      overflow: hidden;
+      animation: fadeIn 2s ease-in;
+    }
+
+    /* Chữ chạy */
+    .message-box p {
+      display: inline-block;
+      white-space: nowrap;
+      animation: scrollText 50s linear infinite; /* chạy chậm hơn */
+    }
+
+    @keyframes scrollText {
+      from { transform: translateX(100%); }
+      to { transform: translateX(-100%); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .sticker:nth-child(1) { left: -20px; top: -20px; animation-delay: 0s; }
+    .sticker:nth-child(2) { right: -20px; top: -20px; animation-delay: 1s; }
+    .sticker:nth-child(3) { left: -20px; bottom: -20px; animation-delay: 2s; }
+    .sticker:nth-child(4) { right: -20px; bottom: -20px; animation-delay: 3s; }
+
+    @keyframes floatSticker {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    /* Canvas nền sao băng */
+    #starfield {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+   <audio id="backgroundMusic" src="assets/Cry For Me x Giày Cao Gót Màu Đỏ.mp3" loop></audio>
+   <script>
+  // Khi user click lần đầu vào màn hình thì phát nhạc
+  document.body.addEventListener('click', () => {
+    const music = document.getElementById('backgroundMusic');
+    music.play().catch(err => console.log("Không phát được nhạc:", err));
+  }, { once: true });
+    </script>
+
+  <canvas id="starfield"></canvas>
+
+  <div class="message-box">
+
+    <!-- Nội dung chúc -->
+    <p>🚀🌌 “Mong hôm nay của bạn nhẹ như mây ☁️, sáng như sao ✨, và vui như đi hội 🎉🥳. Dù deadline hay bài tập có kéo tới 📚🤯 thì cũng mong bạn xử lý gọn gàng lẹ như chớp ⚡💪. Chúc bạn giữ được nụ cười suốt cả ngày 😄🌈, và tối nay nằm chill nghe nhạc thấy đời nó êm như ru 🎶💤.”</p>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Star {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2;
+        this.speed = Math.random() * 0.5 + 0.2;
+      }
+      update() { this.y += this.speed; if (this.y > canvas.height) this.reset(); }
+      draw() { ctx.fillStyle = "white"; ctx.fillRect(this.x, this.y, this.size, this.size); }
+    }
+
+    class ShootingStar {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = 0;
+        this.len = Math.random() * 80 + 10;
+        this.speed = Math.random() * 8 + 5;
+        this.size = 2;
+      }
+      update() { this.x += this.speed; this.y += this.speed; if (this.x > canvas.width || this.y > canvas.height) this.reset(); }
+      draw() {
+        ctx.strokeStyle = "#FF0080";
+        ctx.lineWidth = this.size;
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x - this.len, this.y - this.len);
+        ctx.stroke();
+      }
+    }
+
+    let stars = Array.from({ length: 200 }, () => new Star());
+    let shootingStars = Array.from({ length: 5 }, () => new ShootingStar());
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(s => { s.update(); s.draw(); });
+      shootingStars.forEach(s => { s.update(); s.draw(); });
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>
